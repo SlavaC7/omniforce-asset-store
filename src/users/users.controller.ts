@@ -8,7 +8,7 @@ import {
     ParseFilePipeBuilder,
     Post,
     Req,
-    UploadedFile,
+    UploadedFile, UseGuards,
     UseInterceptors
 } from '@nestjs/common';
 import {UsersService} from './users.service';
@@ -26,12 +26,14 @@ import {
 } from "@nestjs/swagger";
 import {FileInterceptor} from "@nestjs/platform-express";
 import {UserDto} from "../dto/user.dto";
+import {JwtUserGuard} from "../authorization/auth.guard";
 
 @ApiTags('User')
 @ApiUnauthorizedResponse({
     description: "Your access token is not valid or expired."
 })
 @Controller('users')
+@UseGuards(JwtUserGuard)
 export class UsersController {
     constructor(private readonly usersService: UsersService, private readonly jwtService: JwtService) {
     }
@@ -43,7 +45,6 @@ export class UsersController {
     })
     @ApiBadRequestResponse({description: "Provided data is not valid. Needed 'nickname' - String, 'desc' - String"})
     @Post('create')
-    //@UseGuards(JwtUserGuard)
     async create(@Body() newUser: CreateUserDto, @Req() req: Request) {
         const token = req.headers.authorization.replace('Bearer ', '');
         const sub = this.jwtService.decode(token).sub;
@@ -67,7 +68,6 @@ export class UsersController {
     })
     @UseInterceptors(FileInterceptor('avatar'))
     @Post(":id/setAvatar")
-    //@UseGuards(JwtUserGuard)
     async setAvatar(
         @Param('id') id: number,
         @UploadedFile(
