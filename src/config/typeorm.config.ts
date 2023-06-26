@@ -1,7 +1,5 @@
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModuleAsyncOptions, TypeOrmModuleOptions } from '@nestjs/typeorm';
-import {UserEntity} from "../entity/user.entity";
-import {AssetEntity} from "../entity/asset.entity";
+import {ConfigModule, ConfigService} from '@nestjs/config';
+import {TypeOrmModuleAsyncOptions, TypeOrmModuleOptions} from '@nestjs/typeorm';
 
 export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
     imports: [ConfigModule],
@@ -14,7 +12,7 @@ export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
             username: configService.get<string>('DB_USERNAME'),
             password: configService.get<string>('DB_PASSWORD'),
             database: configService.get<string>('DB_DATABASE_NAME'),
-            entities: [UserEntity, AssetEntity],
+            entities: [__dirname + "/../**/*.entity{.ts,.js}"],
             synchronize: true,
             logging: true
         };
