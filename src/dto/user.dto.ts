@@ -1,8 +1,8 @@
-import {CreateUserDto} from "./create-user.dto";
 import {ApiProperty} from "@nestjs/swagger";
-import {IsDate, IsNumber, IsOptional, IsString} from "class-validator";
+import {IsNumber, IsString} from "class-validator";
+import {AbstractDto} from "./abstract.dto";
 
-export class UserDto extends CreateUserDto {
+export class UserDto extends AbstractDto {
     @ApiProperty({
         description: "User id contains in auth0 database",
         title: "User auth0 ID",
@@ -21,7 +21,7 @@ export class UserDto extends CreateUserDto {
         },
         example: {
             type: "Buffer",
-            data: [234, 23, 4, 453 , 65, 234]
+            data: [234, 23, 4, 453, 65, 234]
         }
     })
     @IsNumber()
@@ -31,40 +31,22 @@ export class UserDto extends CreateUserDto {
     };
 
     @ApiProperty({
-        description: "The Id of a user",
-        title: "User ID",
-        type: Number,
-        example: 1
-    })
-    @IsNumber()
-    @IsOptional()
-    public id: number;
-
-    @ApiProperty({
-        description: "The uuid of a user",
-        title: "User UUID",
+        description: "The nickname of a user",
+        title: "User nickname",
         type: String,
-        example: "060fbcfa-243f-46b9-a1d3-7bdc1f4c80a5"
+        required: true,
+        example: "Xepobopa"
     })
     @IsString()
-    @IsOptional()
-    public uuid: string;
+    nickname: string;
 
     @ApiProperty({
-        title: "User createdAt",
-        type: Date,
-        example: "2023-06-21 21:49:06.30812"
+        description: "The description of a user",
+        title: "User description",
+        type: String,
+        required: true,
+        example: "hryak + vulkan41k = love"
     })
-    @IsDate()
-    @IsOptional()
-    public createdAt: Date;
-
-    @ApiProperty({
-        title: "User updatedAt",
-        type: Date,
-        example: "2023-06-21 21:49:06.30812"
-    })
-    @IsDate()
-    @IsOptional()
-    public updatedAt: Date;
+    @IsString()
+    desc: string;
 }
