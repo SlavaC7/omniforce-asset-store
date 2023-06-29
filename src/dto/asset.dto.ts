@@ -41,7 +41,7 @@ export class AssetDto extends AbstractDto {
         required: true,
         example: 428
     })
-    @IsNumber
+    @IsNumber()
     userId: number;
 
     @ApiProperty({
