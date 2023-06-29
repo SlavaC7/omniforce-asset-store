@@ -1,4 +1,4 @@
-import {IsArray, IsMongoId, IsNumber, IsOptional, IsString} from "class-validator";
+import {IsArray, IsNumber, IsOptional, IsString} from "class-validator";
 import {ApiProperty} from "@nestjs/swagger";
 import {AbstractDto} from "./abstract.dto";
 
@@ -41,8 +41,8 @@ export class AssetDto extends AbstractDto {
         required: true,
         example: 428
     })
-    //@IsNumber
-    developerId: Number;
+    @IsNumber
+    userId: number;
 
     @ApiProperty({
         description: "The rating of an asset (from 0 to 5.0)",
