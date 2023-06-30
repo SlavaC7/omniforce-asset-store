@@ -1,5 +1,5 @@
 import {AbstractEntity} from "./abstarct.entity";
-import {Column, Entity, JoinColumn, OneToOne} from "typeorm";
+import {Column, Entity, JoinColumn, ManyToOne, OneToOne} from "typeorm";
 import {UserEntity} from "./user.entity";
 
 @Entity({name: "asset"})
@@ -22,7 +22,7 @@ export class AssetEntity extends AbstractEntity {
     @Column('bytea', {nullable: true, array: true})
     pictures: Array<Buffer>;
 
-    @OneToOne(() => UserEntity)
+    @ManyToOne(() => UserEntity)
     @JoinColumn()
     public user: UserEntity;
 }

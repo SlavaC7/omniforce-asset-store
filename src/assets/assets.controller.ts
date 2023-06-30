@@ -1,11 +1,14 @@
 import {
     Body,
-    Controller, Delete, Get,
+    Controller,
+    Delete,
+    Get,
     HttpStatus,
     Param,
     ParseFilePipeBuilder,
-    Post,
-    UploadedFiles, UseGuards,
+    Post, Query,
+    UploadedFiles,
+    UseGuards,
     UseInterceptors
 } from '@nestjs/common';
 import {AssetsService} from './assets.service';
@@ -13,14 +16,17 @@ import {CreateAssetDto} from "../dto/create-asset.dto";
 import {FilesInterceptor} from "@nestjs/platform-express";
 import {JwtUserGuard} from "../authorization/auth.guard";
 import {
-    ApiBadRequestResponse, ApiBody, ApiConsumes,
-    ApiCreatedResponse, ApiOkResponse,
+    ApiBadRequestResponse,
+    ApiBody,
+    ApiConsumes,
+    ApiCreatedResponse,
+    ApiOkResponse,
     ApiOperation,
     ApiTags,
     ApiUnauthorizedResponse
 } from "@nestjs/swagger";
-import {UserDto} from "../dto/user.dto";
 import {AssetDto} from "../dto/asset.dto";
+import {AssetQueryDto} from "../dto/asset-query.dto";
 
 @ApiTags('Asset')
 @ApiUnauthorizedResponse({
@@ -78,6 +84,11 @@ export class AssetsController {
                 })
         ) pictures: Array<Express.Multer.File>) {
         return await this.assetsService.setPictures(id, pictures.map(picture => picture.buffer));
+    }
+
+    @Get('get')
+    async getAssetsByQuery(@Query() query: AssetQueryDto) {
+        return await this.assetsService.getAssetByQuery(query);
     }
 
     @ApiOperation({summary: "Return an asset with provided 'id'"})

@@ -4,6 +4,7 @@ import {Repository} from "typeorm";
 import {AssetEntity} from "../entity/asset.entity";
 import {CreateAssetDto} from "../dto/create-asset.dto";
 import {UsersService} from "../users/users.service";
+import {AssetQueryDto} from "../dto/asset-query.dto";
 
 @Injectable()
 export class AssetsService {
@@ -30,6 +31,12 @@ export class AssetsService {
 
     async getAsset(id: number) {
         return await this.assetRepository.findOneByOrFail({id});
+    }
+
+    async getAssetByQuery(query: AssetQueryDto) {
+        console.log('query')
+        console.log(query);
+        return await this.assetRepository.findBy(query);
     }
 
     async deleteUser(id: number) {
