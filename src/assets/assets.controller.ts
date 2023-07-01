@@ -40,21 +40,21 @@ export class AssetsController {
 
     @ApiOperation({summary: "Create a new asset"})
     @ApiCreatedResponse({
-        description: "Asset has been created. Returned value is an id of an created object",
+        description: "Asset has been created. Returned value is an uuid of an created object",
         type: Number
     })
     @ApiBadRequestResponse({description: "Provided data is not valid. Data must be like an CreateAssetDto. Check if user with provided if exist"})
-    @Post('/create/:userId')
-    async createAsset(@Param('userId') userId: number, @Body() newAsset: CreateAssetDto) {
-        return await this.assetsService.createAsset(newAsset, userId);
+    @Post('/create/:userUUID')
+    async createAsset(@Param('userUUID') userUUID: string, @Body() newAsset: CreateAssetDto) {
+        return await this.assetsService.createAsset(newAsset, userUUID);
     }
 
     @ApiOperation({summary: "Add an pictures (for preview) to asset (jpeg only)"})
     @ApiCreatedResponse({
-        description: "Pictures set to the user with 'id'. If pictires set successful, return '1'",
+        description: "Pictures set to the user with 'uuid'. If pictires set successful, return '1'",
         type: Number
     })
-    @ApiBadRequestResponse({description: "Can't find user with provided 'id'"})
+    @ApiBadRequestResponse({description: "Can't find user with provided 'uuid'"})
     @ApiConsumes('multipart/form-data')
     @UseInterceptors(FilesInterceptor('pictures'))
     @ApiBody({
@@ -68,9 +68,9 @@ export class AssetsController {
             },
         },
     })
-    @Post('/:id/setPictures')
+    @Post('/:uuid/setPictures')
     async setPictures(
-        @Param('id') id: number,
+        @Param('uuid') uuid: string,
         @UploadedFiles(
             new ParseFilePipeBuilder()
                 .addFileTypeValidator({
@@ -83,7 +83,7 @@ export class AssetsController {
                     errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
                 })
         ) pictures: Array<Express.Multer.File>) {
-        return await this.assetsService.setPictures(id, pictures.map(picture => picture.buffer));
+        return await this.assetsService.setPictures(uuid, pictures.map(picture => picture.buffer));
     }
 
     @Get('get')
@@ -91,19 +91,19 @@ export class AssetsController {
         return await this.assetsService.getAssetByQuery(query);
     }
 
-    @ApiOperation({summary: "Return an asset with provided 'id'"})
-    @ApiOkResponse({description: "Asset with provided 'id'.", type: AssetDto})
-    @ApiBadRequestResponse({description: "Can't find asset with provided 'id'"})
-    @Get(':id')
-    async getAsset(@Param('id') id: number) {
-        return await this.assetsService.getAsset(id);
+    @ApiOperation({summary: "Return an asset with provided 'uuid'"})
+    @ApiOkResponse({description: "Asset with provided 'uuid'.", type: AssetDto})
+    @ApiBadRequestResponse({description: "Can't find asset with provided 'uuid'"})
+    @Get(':uuid')
+    async getAsset(@Param('uuid') uuid: string) {
+        return await this.assetsService.getAsset(uuid);
     }
 
-    @ApiOperation({summary: "Delete an asset with provided 'id'"})
-    @ApiOkResponse({description: "Asset with provided 'id' has been deleted", type: Number})
-    @ApiBadRequestResponse({description: "Can't find asset with provided 'id'"})
-    @Delete(':id')
-    async deleteAsset(@Param('id') id: number) {
-        return await this.assetsService.deleteUser(id);
+    @ApiOperation({summary: "Delete an asset with provided 'uuid'"})
+    @ApiOkResponse({description: "Asset with provided 'uuid' has been deleted", type: Number})
+    @ApiBadRequestResponse({description: "Can't find asset with provided 'uuid'"})
+    @Delete(':uuid')
+    async deleteAsset(@Param('uuid') uuid: string) {
+        return await this.assetsService.deleteUser(uuid);
     }
 }

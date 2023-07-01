@@ -11,28 +11,28 @@ export class UsersService {
     ) {
     }
 
-    async setAvatar(id: number, avatar: Buffer) {
+    async setAvatar(uuid: string, avatar: Buffer) {
         const res = await this.usersRepository.update(
-            id,
+            {uuid},
             {avatar}
         );
 
-        if (res.affected === 0) throw new BadRequestException(`Can't find user with id "${id}"`);
+        if (res.affected === 0) throw new BadRequestException(`Can't find user with id "${uuid}"`);
         return res.affected;
     }
 
     async create(newUser: CreateUserDto, auth0_sub: string) {
-        return (await this.usersRepository.insert({...newUser, auth0_sub})).identifiers[0].id;
+        return (await this.usersRepository.insert({...newUser, auth0_sub})).raw[0].uuid;
     }
 
-    async getUser(id: number) {
-        return await this.usersRepository.findOneByOrFail({id});
+    async getUser(uuid: string) {
+        return await this.usersRepository.findOneByOrFail({uuid});
     }
 
-    async deleteUser(id: number) {
-        const res = await this.usersRepository.delete(id);
+    async deleteUser(uuid: string) {
+        const res = await this.usersRepository.delete({uuid});
 
-        if (res.affected === 0) throw new BadRequestException(`Can't find user with id "${id}"`);
+        if (res.affected === 0) throw new BadRequestException(`Can't find user with id "${uuid}"`);
         return res.affected;
     }
 }

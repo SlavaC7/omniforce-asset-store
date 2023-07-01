@@ -14,35 +14,33 @@ export class AssetsService {
     ) {
     }
 
-    async createAsset(newAsset: CreateAssetDto, userId: number) {
-        const user = await this.userService.getUser(userId);
-        return (await this.assetRepository.insert({...newAsset, user})).identifiers[0].id;
+    async createAsset(newAsset: CreateAssetDto, userUUID: string) {
+        const user = await this.userService.getUser(userUUID);
+        return (await this.assetRepository.insert({...newAsset, user})).raw[0].uuid;
     }
 
-    async setPictures(id: number, pictures: Array<Buffer>) {
+    async setPictures(uuid: string, pictures: Array<Buffer>) {
         const res = await this.assetRepository.update(
-            id,
+            {uuid},
             {pictures}
         );
 
-        if (res.affected === 0) throw new BadRequestException(`Can't find user with id "${id}"`);
+        if (res.affected === 0) throw new BadRequestException(`Can't find user with id "${uuid}"`);
         return res.affected;
     }
 
-    async getAsset(id: number) {
-        return await this.assetRepository.findOneByOrFail({id});
+    async getAsset(uuid: string) {
+        return await this.assetRepository.findOneOrFail({where: {uuid}, relations: ['user']});
     }
 
     async getAssetByQuery(query: AssetQueryDto) {
-        console.log('query')
-        console.log(query);
         return await this.assetRepository.findBy(query);
     }
 
-    async deleteUser(id: number) {
-        const res = await this.assetRepository.delete(id);
+    async deleteUser(uuid: string) {
+        const res = await this.assetRepository.delete(uuid);
 
-        if (res.affected === 0) throw new BadRequestException(`Can't find user with id "${id}"`);
+        if (res.affected === 0) throw new BadRequestException(`Can't find user with id "${uuid}"`);
         return res.affected;
     }
 }

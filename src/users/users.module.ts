@@ -13,7 +13,8 @@ import {UserEntity} from "../entity/user.entity";
         AuthorizationModule
     ],
     controllers: [UsersController],
-    providers: [UsersService]
+    providers: [UsersService],
+    exports: [UsersService]
 })
 export class UsersModule {
 }
