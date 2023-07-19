@@ -2,13 +2,14 @@ import {
     Body,
     Controller,
     Delete,
-    Get,
+    Get, Header,
     HttpStatus,
     Param,
     ParseFilePipeBuilder,
     Post,
     Req,
-    UploadedFile, UseGuards,
+    UploadedFile,
+    UseGuards,
     UseInterceptors
 } from '@nestjs/common';
 import {UsersService} from './users.service';
@@ -16,7 +17,7 @@ import {CreateUserDto} from '../dto/create-user.dto';
 import {Request} from "express";
 import {JwtService} from "@nestjs/jwt";
 import {
-    ApiBadRequestResponse,
+    ApiBadRequestResponse, ApiBearerAuth,
     ApiBody,
     ApiConsumes,
     ApiCreatedResponse,
@@ -27,9 +28,13 @@ import {
 } from "@nestjs/swagger";
 import {FileInterceptor} from "@nestjs/platform-express";
 import {UserDto} from "../dto/user.dto";
+import {Roles} from "../role/roles.decorator";
+import {Role} from "../role/role.enum";
+import {RolesGuard} from "../role/roles.guard";
 import {JwtUserGuard} from "../authorization/auth.guard";
 
 @ApiTags('User')
+@ApiBearerAuth("access-token")
 @ApiUnauthorizedResponse({
     description: "Your access token is not valid or expired."
 })
@@ -37,6 +42,7 @@ import {JwtUserGuard} from "../authorization/auth.guard";
 @UseGuards(JwtUserGuard)
 export class UsersController {
     constructor(private readonly usersService: UsersService, private readonly jwtService: JwtService) {
+
     }
 
     @ApiOperation({summary: "Create a new user"})
@@ -103,5 +109,12 @@ export class UsersController {
     @Delete('delete/:uuid')
     async deleteUser(@Param('uuid') uuid: string) {
         return await this.usersService.deleteUser(uuid);
+    }
+
+    @Get('block/:uuid')
+    @Roles(Role.Admin)
+    @UseGuards(RolesGuard)
+    async blockUser(@Param('uuid') uuid: string) {
+        return await this.usersService.blockUser(uuid);
     }
 }
