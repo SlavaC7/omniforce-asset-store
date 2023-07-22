@@ -3,11 +3,13 @@ import {CreateUserDto} from '../dto/create-user.dto';
 import {InjectRepository} from "@nestjs/typeorm";
 import {UserEntity} from "../entity/user.entity";
 import {Repository} from "typeorm";
+import {ManagementClientService} from "../managementClient/management-client.service";
 
 @Injectable()
 export class UsersService {
     constructor(
         @InjectRepository(UserEntity) private usersRepository: Repository<UserEntity>,
+        private readonly managementClientService: ManagementClientService,
     ) {
     }
 
@@ -35,4 +37,12 @@ export class UsersService {
         if (res.affected === 0) throw new BadRequestException(`Can't find user with id "${uuid}"`);
         return res.affected;
     }
+
+    async blockUser(uuid: string) {
+        const sub = (await this.getUser(uuid)).auth0_sub;
+        return await this.managementClientService.managementClient.updateUser({id: sub}, {blocked: true});
+    }
 }
+
+
+
