@@ -111,6 +111,9 @@ export class UsersController {
         return await this.usersService.deleteUser(uuid);
     }
 
+    @ApiOperation({summary: "Block user with provided 'uuid'. User who blocks must be an Admin"})
+    @ApiOkResponse({description: "User with provided 'uuid' has been blocked", type: UserDto})
+    @ApiBadRequestResponse({description: "Can't find user with provided 'uuid'"})
     @Get('block/:uuid')
     @Roles(Role.Admin)
     @UseGuards(RolesGuard)
