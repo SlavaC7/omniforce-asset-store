@@ -2,15 +2,15 @@ import {NestFactory} from '@nestjs/core';
 import {AppModule} from './app.module';
 import {ValidationPipe} from "@nestjs/common";
 import {ConfigService} from "@nestjs/config";
-import {auth} from "express-openid-connect";
 import {setupSwagger} from "./config/swagger.config";
-import { join } from 'path';
+import * as cookieParser from "cookie-parser";
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create(AppModule, { cors: true });
     const config = app.get<ConfigService>(ConfigService);
 
-    app.enableCors();
+    app.enableCors({ credentials: true, origin: true });
+    app.use(cookieParser());
     app.useGlobalPipes(new ValidationPipe());
 
     if (config.get<string>('NODE_ENV') === "DEVELOPMENT") {
