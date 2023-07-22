@@ -1,12 +1,14 @@
-import {Module} from '@nestjs/common';
+import {Global, Module} from '@nestjs/common';
 import {ConfigModule} from "@nestjs/config";
 import {UsersModule} from './users/users.module';
 import * as Joi from "joi";
-import {AuthorizationModule} from "./authorization/authorization.module";
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {typeOrmAsyncConfig} from "./config/typeorm.config";
 import {AssetsModule} from './assets/assets.module';
+import {HttpModule} from "@nestjs/axios";
+import {JwtModule} from "@nestjs/jwt";
 
+@Global()
 @Module({
     imports: [
         ConfigModule.forRoot({
@@ -27,9 +29,11 @@ import {AssetsModule} from './assets/assets.module';
         }),
         TypeOrmModule.forRootAsync(typeOrmAsyncConfig),
         UsersModule,
-        AuthorizationModule,
-        AssetsModule
+        AssetsModule,
+        HttpModule,
+        JwtModule
     ],
+    exports: [HttpModule, JwtModule]
 })
 export class AppModule {
 
