@@ -12,7 +12,7 @@ export function setupSwagger(app: INestApplication): void {
             {
                 description: 'Please enter access token',
                 name: 'Authorization',
-                bearerFormat: 'Bearer',
+                bearerFormat: 'JWT',
                 scheme: 'Bearer',
                 type: 'http',
                 in: 'Header'
