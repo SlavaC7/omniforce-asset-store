@@ -1,17 +1,18 @@
 import {Injectable} from "@nestjs/common";
 import {ManagementClient} from "auth0";
+import {ConfigService} from "@nestjs/config";
 
 @Injectable()
 export class ManagementClientService {
     public managementClient: ManagementClient;
 
-    constructor() {
+    constructor(private readonly configService: ConfigService) {
         this.managementClient = new ManagementClient({
-            domain: 'dev-tyu80romro64bab1.us.auth0.com',
-            clientId: 'yJBuARpadXtYvsWpEf3Jq8C1FZMa2tfP',
-            clientSecret: 'JzFGjk06UxwZio_Aw3UPU-4Dsj24xyrMB03f7o2bzA_AN-841F2bub-NfKuwHo5c',
+            domain: configService.get<string>('DOMAIN'),
+            clientId: configService.get<string>('CLIENT_ID'),
+            clientSecret: configService.get<string>('CLIENT_SECRET'),
             scope: "read:users create:users read:roles read:role_members",
-            audience: 'https://dev-tyu80romro64bab1.us.auth0.com/api/v2/',
+            audience: configService.get<string>('AUDIENCE'),
             tokenProvider: {
                 enableCache: true,
                 cacheTTLInSeconds: 10
