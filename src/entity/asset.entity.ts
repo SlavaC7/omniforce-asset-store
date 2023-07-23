@@ -19,8 +19,8 @@ export class AssetEntity extends AbstractEntity {
     @Column()
     likes: number;
 
-    @Column('bytea', {nullable: true, array: true})
-    pictures: Array<Buffer>;
+    @Column('simple-array', {nullable: true, array: true})
+    pictures: Array<string>;
 
     @ManyToOne(() => UserEntity)
     @JoinColumn()

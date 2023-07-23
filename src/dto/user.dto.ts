@@ -15,20 +15,11 @@ export class UserDto extends AbstractDto {
     @ApiProperty({
         description: "The user avatar",
         title: "Avatar",
-        type: typeof {
-            type: String,
-            data: [Number]
-        },
-        example: {
-            type: "Buffer",
-            data: [234, 23, 4, 453, 65, 234]
-        }
+        type: String,
+        example: 'https://asset-store-user-images.s3.eu-north-1.amazonaws.com/test.jpg'
     })
     @IsNumber()
-    public avatar: {
-        type: String,
-        data: [Number]
-    };
+    public avatar: string
 
     @ApiProperty({
         description: "The nickname of a user",

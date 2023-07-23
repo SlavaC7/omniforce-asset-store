@@ -69,9 +69,14 @@ export class AssetDto extends AbstractDto {
     @ApiProperty({
         description: "The pictures (quick view) of an asset",
         title: "Pictures",
-        type: [Buffer],
+        type: [String],
+        example: [
+            'https://asset-store-asset-images.s3.eu-north-1.amazonaws.com/xepobopa-test1.jpg',
+            'https://asset-store-asset-images.s3.eu-north-1.amazonaws.com/xepobopa-test2.jpg',
+            'https://asset-store-asset-images.s3.eu-north-1.amazonaws.com/xepobopa-test3.jpg',
+        ],
         required: false,
     })
     @IsArray()
-    pictures: Buffer[]
+    pictures: String[]
 }

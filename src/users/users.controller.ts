@@ -2,7 +2,7 @@ import {
     Body,
     Controller,
     Delete,
-    Get, Header,
+    Get,
     HttpStatus,
     Param,
     ParseFilePipeBuilder,
@@ -17,7 +17,8 @@ import {CreateUserDto} from '../dto/create-user.dto';
 import {Request} from "express";
 import {JwtService} from "@nestjs/jwt";
 import {
-    ApiBadRequestResponse, ApiBearerAuth,
+    ApiBadRequestResponse,
+    ApiBearerAuth,
     ApiBody,
     ApiConsumes,
     ApiCreatedResponse,
@@ -92,7 +93,7 @@ export class UsersController {
                     errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
                 })
         ) avatar: Express.Multer.File) {
-        return await this.usersService.setAvatar(uuid, avatar.buffer);
+        return await this.usersService.setAvatar(uuid, avatar.originalname, avatar.buffer);
     }
 
     @ApiOperation({summary: "Return a user with provided 'uuid'"})

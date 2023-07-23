@@ -4,19 +4,23 @@ import {InjectRepository} from "@nestjs/typeorm";
 import {UserEntity} from "../entity/user.entity";
 import {Repository} from "typeorm";
 import {ManagementClientService} from "../managementClient/management-client.service";
+import {UploadService} from "../upload/upload.service";
 
 @Injectable()
 export class UsersService {
     constructor(
         @InjectRepository(UserEntity) private usersRepository: Repository<UserEntity>,
         private readonly managementClientService: ManagementClientService,
+        private readonly uploadService: UploadService
     ) {
     }
 
-    async setAvatar(uuid: string, avatar: Buffer) {
+    async setAvatar(uuid: string, filename: string, avatar: Buffer) {
+        this.uploadService.uploadUser(filename, avatar);
+
         const res = await this.usersRepository.update(
             {uuid},
-            {avatar}
+            {avatar: filename}
         );
 
         if (res.affected === 0) throw new BadRequestException(`Can't find user with id "${uuid}"`);

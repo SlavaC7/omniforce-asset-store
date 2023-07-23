@@ -6,8 +6,8 @@ export class UserEntity extends AbstractEntity {
     @Column()
     public nickname: string;
 
-    @Column('bytea', {nullable: true})
-    public avatar: Buffer;
+    @Column({nullable: true})
+    public avatar: string;
 
     @Column()
     public auth0_sub: string;
