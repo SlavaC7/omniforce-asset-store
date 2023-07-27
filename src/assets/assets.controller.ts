@@ -6,7 +6,8 @@ import {
     HttpStatus,
     Param,
     ParseFilePipeBuilder,
-    Post, Query,
+    Post,
+    Query,
     UploadedFiles,
     UseGuards,
     UseInterceptors
@@ -17,6 +18,7 @@ import {FilesInterceptor} from "@nestjs/platform-express";
 import {JwtUserGuard} from "../authorization/auth.guard";
 import {
     ApiBadRequestResponse,
+    ApiBearerAuth,
     ApiBody,
     ApiConsumes,
     ApiCreatedResponse,
@@ -29,6 +31,7 @@ import {AssetDto} from "../dto/asset.dto";
 import {AssetQueryDto} from "../dto/asset-query.dto";
 
 @ApiTags('Asset')
+@ApiBearerAuth("access-token")
 @ApiUnauthorizedResponse({
     description: "Your access token is not valid or expired."
 })
@@ -43,34 +46,32 @@ export class AssetsController {
         description: "Asset has been created. Returned value is an uuid of an created object",
         type: Number
     })
-    @ApiBadRequestResponse({description: "Provided data is not valid. Data must be like an CreateAssetDto. Check if user with provided if exist"})
-    @Post('/create/:userUUID')
-    async createAsset(@Param('userUUID') userUUID: string, @Body() newAsset: CreateAssetDto) {
-        return await this.assetsService.createAsset(newAsset, userUUID);
-    }
-
-    @ApiOperation({summary: "Add an pictures (for preview) to asset (jpeg only)"})
-    @ApiCreatedResponse({
-        description: "Pictures set to the user with 'uuid'. If pictires set successful, return '1'",
-        type: Number
-    })
-    @ApiBadRequestResponse({description: "Can't find user with provided 'uuid'"})
     @ApiConsumes('multipart/form-data')
     @UseInterceptors(FilesInterceptor('pictures'))
     @ApiBody({
         schema: {
-            type: 'object',
+            type: "object",
             properties: {
-                picture: {
-                    type: 'string',
-                    format: 'binary',
+                pictures: {
+                    type: "array",
+                    items: {
+                        type: "string",
+                        format: "binary",
+                    },
                 },
+                title: {type: 'string'},
+                desc: {type: 'string'},
+                price: {type: 'number'},
+                rating: {type: 'number'},
+                likes: {type: 'number'},
             },
         },
     })
-    @Post('/:uuid/setPictures')
-    async setPictures(
-        @Param('uuid') uuid: string,
+    @ApiBadRequestResponse({description: "Provided data is not valid. Data must be like an CreateAssetDto. Check if user with provided if exist"})
+    @Post('/create/:userUUID')
+    async createAsset(
+        @Param('userUUID') userUUID: string,
+        @Body() newAsset: CreateAssetDto,
         @UploadedFiles(
             new ParseFilePipeBuilder()
                 .addFileTypeValidator({
@@ -83,7 +84,9 @@ export class AssetsController {
                     errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
                 })
         ) pictures: Array<Express.Multer.File>) {
-        return await this.assetsService.setPictures(uuid, pictures.map(picture => picture.buffer));
+        const assetUuid = await this.assetsService.createAsset(newAsset, userUUID);
+        await this.assetsService.setPictures(assetUuid, pictures);
+        return assetUuid;
     }
 
     @Get('get')

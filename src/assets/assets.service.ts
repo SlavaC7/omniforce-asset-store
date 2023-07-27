@@ -5,12 +5,14 @@ import {AssetEntity} from "../entity/asset.entity";
 import {CreateAssetDto} from "../dto/create-asset.dto";
 import {UsersService} from "../users/users.service";
 import {AssetQueryDto} from "../dto/asset-query.dto";
+import {UploadService} from "../upload/upload.service";
 
 @Injectable()
 export class AssetsService {
     constructor(
         @InjectRepository(AssetEntity) private assetRepository: Repository<AssetEntity>,
         private readonly userService: UsersService,
+        private readonly uploadService: UploadService,
     ) {
     }
 
@@ -19,14 +21,21 @@ export class AssetsService {
         return (await this.assetRepository.insert({...newAsset, user})).raw[0].uuid;
     }
 
-    async setPictures(uuid: string, pictures: Array<Buffer>) {
-        const res = await this.assetRepository.update(
-            {uuid},
-            {pictures}
-        );
+    async setPictures(uuid: string, pictures: Array<Express.Multer.File>) {
+        const assetToUpdate = await this.assetRepository
+            .createQueryBuilder()
+            .update()
+            .where(
+                "uuid = :uuid",
+                { uuid }
+            );
 
-        if (res.affected === 0) throw new BadRequestException(`Can't find user with id "${uuid}"`);
-        return res.affected;
+        for (const pic of pictures) {
+            this.uploadService.uploadAsset(`${uuid}~_~${pic.originalname}`, pic.buffer);
+
+            console.log(pic.originalname);
+            await assetToUpdate.set({ pictures: () => `array_append("pictures", '${pic.originalname}')` }).execute();
+        }
     }
 
     async getAsset(uuid: string) {
@@ -38,7 +47,7 @@ export class AssetsService {
     }
 
     async deleteUser(uuid: string) {
-        const res = await this.assetRepository.delete(uuid);
+        const res = await this.assetRepository.delete({uuid});
 
         if (res.affected === 0) throw new BadRequestException(`Can't find user with id "${uuid}"`);
         return res.affected;
