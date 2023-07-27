@@ -52,19 +52,6 @@ export class UsersController {
         type: Number
     })
     @ApiBadRequestResponse({description: "Provided data is not valid. Needed 'nickname' - String, 'desc' - String"})
-    @Post('create')
-    async create(@Body() newUser: CreateUserDto, @Req() req: Request) {
-        const token = req.headers.authorization.replace('Bearer ', '');
-        const sub = this.jwtService.decode(token).sub;
-        return await this.usersService.create(newUser, sub);
-    }
-
-    @ApiOperation({summary: "Add an avatar to user (jpeg only)"})
-    @ApiCreatedResponse({
-        description: "Avatar set to the user with 'uuid'. If avatar set successful, return 1",
-        type: Number
-    })
-    @ApiBadRequestResponse({description: "Can't find user with  provided 'uuid'"})
     @ApiConsumes('multipart/form-data')
     @ApiBody({
         schema: {
@@ -74,13 +61,24 @@ export class UsersController {
                     type: 'string',
                     format: 'binary',
                 },
+                nickname: {
+                    type: 'string',
+                    format: 'string',
+                    example: 'Xepobopa'
+                },
+                desc: {
+                    type: 'string',
+                    format: 'string',
+                    example: 'description'
+                },
             },
         },
     })
     @UseInterceptors(FileInterceptor('avatar'))
-    @Post(":uuid/setAvatar")
-    async setAvatar(
-        @Param('uuid') uuid: string,
+    @Post('create')
+    async create(
+        @Body() newUser: CreateUserDto,
+        @Req() req: Request,
         @UploadedFile(
             new ParseFilePipeBuilder()
                 .addFileTypeValidator({
@@ -93,7 +91,11 @@ export class UsersController {
                     errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
                 })
         ) avatar: Express.Multer.File) {
-        return await this.usersService.setAvatar(uuid, avatar.originalname, avatar.buffer);
+        const token = req.headers.authorization.replace('Bearer ', '');
+        const sub = this.jwtService.decode(token).sub;
+        const uuid = await this.usersService.create(newUser, sub);
+        await this.usersService.setAvatar(uuid, avatar.originalname, avatar.buffer);
+        return uuid;
     }
 
     @ApiOperation({summary: "Return a user with provided 'uuid'"})
