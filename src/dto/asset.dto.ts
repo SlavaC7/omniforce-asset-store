@@ -1,6 +1,7 @@
 import {IsArray, IsNumber, IsOptional, IsString} from "class-validator";
 import {ApiProperty} from "@nestjs/swagger";
 import {AbstractDto} from "./abstract.dto";
+import {Transform} from "class-transformer";
 
 export class AssetDto extends AbstractDto {
     @ApiProperty({
@@ -29,8 +30,9 @@ export class AssetDto extends AbstractDto {
         title: "Price",
         type: Number,
         required: true,
-        example: 79
+        example: 79,
     })
+    @Transform(({ value }) => Number(value))
     @IsNumber()
     price: number;
 
@@ -49,9 +51,10 @@ export class AssetDto extends AbstractDto {
         title: "Rating",
         type: Number,
         required: false,
-        example: 4.8
+        example: 4.8,
     })
     @IsOptional()
+    @Transform(({ value }) => Number(value))
     @IsNumber()
     rating: number;
 
@@ -60,9 +63,10 @@ export class AssetDto extends AbstractDto {
         title: "Likes",
         type: Number,
         required: false,
-        example: 1488
+        example: 1488,
     })
     @IsOptional()
+    @Transform(({ value }) => Number(value))
     @IsNumber()
     likes: number;
 
