@@ -5,6 +5,7 @@ import {UserEntity} from "../entity/user.entity";
 import {Repository} from "typeorm";
 import {ManagementClientService} from "../managementClient/management-client.service";
 import {UploadService} from "../upload/upload.service";
+import {UpdateUserDto} from "../dto/update-user.dto";
 
 @Injectable()
 export class UsersService {
@@ -29,6 +30,12 @@ export class UsersService {
 
     async create(newUser: CreateUserDto, auth0_sub: string) {
         return (await this.usersRepository.insert({...newUser, auth0_sub})).raw[0].uuid;
+    }
+
+    async updateUser(uuid: string, changes: UpdateUserDto) {
+        const userToUpdate = await this.getUser(uuid);
+        console.log(Object.assign(userToUpdate, changes));
+        return await this.usersRepository.save(Object.assign(userToUpdate, changes));
     }
 
     async getUser(uuid: string) {

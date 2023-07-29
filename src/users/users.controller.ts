@@ -6,6 +6,7 @@ import {
     HttpStatus,
     Param,
     ParseFilePipeBuilder,
+    Patch,
     Post,
     Req,
     UploadedFile,
@@ -32,6 +33,7 @@ import {UserDto} from "../dto/user.dto";
 import {Roles} from "../role/roles.decorator";
 import {Role} from "../role/role.enum";
 import {RolesGuard} from "../role/roles.guard";
+import {UpdateUserDto} from "../dto/update-user.dto";
 import {JwtUserGuard} from "../authorization/auth.guard";
 
 @ApiTags('User')
@@ -96,6 +98,15 @@ export class UsersController {
         const uuid = await this.usersService.create(newUser, sub);
         await this.usersService.setAvatar(uuid, avatar.originalname, avatar.buffer);
         return uuid;
+    }
+
+    @ApiOperation({summary: "Update a user with provided 'uuid'"})
+    @ApiOkResponse({description: "Return new changed user .", type: UserDto})
+    @ApiBadRequestResponse({description: "Can't find user with provided 'uuid'"})
+    @ApiBody({description: "Pass the options you want to change", type: UpdateUserDto})
+    @Patch(':uuid')
+    async updateUser(@Param("uuid") uuid: string, @Body() changes: UpdateUserDto) {
+        return await this.usersService.updateUser(uuid, changes);
     }
 
     @ApiOperation({summary: "Return a user with provided 'uuid'"})
