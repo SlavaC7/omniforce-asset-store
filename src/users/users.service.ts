@@ -17,7 +17,12 @@ export class UsersService {
     }
 
     async setAvatar(uuid: string, filename: string, avatar: Buffer) {
-        this.uploadService.uploadUser(filename, avatar);
+        const cur_filename = (await this.getUser(uuid)).avatar;
+        console.log(cur_filename);
+        if (cur_filename)
+            await this.uploadService.deleteUser(cur_filename);
+
+        await this.uploadService.uploadUser(filename, avatar);
 
         const res = await this.usersRepository.update(
             {uuid},

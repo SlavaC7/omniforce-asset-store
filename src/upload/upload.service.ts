@@ -1,6 +1,6 @@
 import {Injectable} from '@nestjs/common';
 import {ConfigService} from "@nestjs/config";
-import {PutObjectCommand, S3Client} from "@aws-sdk/client-s3";
+import {DeleteObjectCommand, GetObjectCommand, PutObjectCommand, S3Client} from "@aws-sdk/client-s3";
 
 @Injectable()
 export class UploadService {
@@ -22,6 +22,16 @@ export class UploadService {
                 Key: filename,
                 Body: file,
             }),
+        );
+    }
+
+
+    async deleteUser(filename: string) {
+        return await this.s3Client.send(
+          new DeleteObjectCommand({
+              Bucket: this.configService.get<string>('AWS_USER_BUCKET'),
+              Key: filename,
+          })
         );
     }
 

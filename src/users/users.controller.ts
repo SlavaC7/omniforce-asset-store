@@ -109,6 +109,27 @@ export class UsersController {
         return await this.usersService.updateUser(uuid, changes);
     }
 
+    @UseInterceptors(FileInterceptor('avatar'))
+    @Patch(':uuid/setAvatar')
+    async changeAvatar(
+        @Param('uuid') uuid: string,
+        @UploadedFile(
+            new ParseFilePipeBuilder()
+                .addFileTypeValidator({
+                    fileType: "image/jpeg"
+                })
+                .addMaxSizeValidator({
+                    maxSize: 2 * 1000 * 1000
+                })
+                .build({
+                    errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
+                })
+        ) avatar: Express.Multer.File
+    ) {
+        console.log(avatar);
+        return await this.usersService.setAvatar(uuid, avatar.originalname, avatar.buffer);
+    }
+
     @ApiOperation({summary: "Return a user with provided 'uuid'"})
     @ApiOkResponse({description: "User with provided 'uuid'.", type: UserDto})
     @ApiBadRequestResponse({description: "Can't find user with provided 'uuid'"})
