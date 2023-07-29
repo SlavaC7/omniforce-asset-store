@@ -109,6 +109,21 @@ export class UsersController {
         return await this.usersService.updateUser(uuid, changes);
     }
 
+    @ApiOperation({summary: "Update a user avatar by provided 'uuid'"})
+    @ApiOkResponse({description: "Return new changed user .", type: Number})
+    @ApiBadRequestResponse({description: "Can't find user with provided 'uuid'"})
+    @ApiConsumes('multipart/form-data')
+    @ApiBody({
+        schema: {
+            type: 'object',
+            properties: {
+                avatar: {
+                    type: 'string',
+                    format: 'binary',
+                },
+            },
+        },
+    })
     @UseInterceptors(FileInterceptor('avatar'))
     @Patch(':uuid/setAvatar')
     async changeAvatar(
