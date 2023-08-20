@@ -13,11 +13,14 @@ export class AssetEntity extends AbstractEntity {
     @Column('float8')
     price: number;
 
-    @Column('float8')
+    @Column('float8', { default: 0 })
     rating: number;
 
-    @Column()
+    @Column({ default: 0 })
     likes: number;
+
+    @Column({ default: 0 })
+    discount: number;
 
     @Column('simple-array', {nullable: true, array: true, default: []})
     pictures: Array<string>;

@@ -1,7 +1,7 @@
-import {IsArray, IsNumber, IsOptional, IsString} from "class-validator";
+import {IsArray, IsNumber, IsOptional, IsString, Max, Min} from "class-validator";
 import {ApiProperty} from "@nestjs/swagger";
 import {AbstractDto} from "./abstract.dto";
-import {Transform} from "class-transformer";
+import {Transform, Type} from "class-transformer";
 
 export class AssetDto extends AbstractDto {
     @ApiProperty({
@@ -81,6 +81,21 @@ export class AssetDto extends AbstractDto {
         ],
         required: false,
     })
+    @IsOptional()
     @IsArray()
-    pictures: String[]
+    pictures: string[]
+
+    @ApiProperty({
+        description: 'asset discount (0 - 100)',
+        title: "Discount",
+        type: Number,
+        example: 50,
+        required: false
+    })
+    @IsOptional()
+    @IsNumber()
+    @Min(0)
+    @Max(100)
+    @Type(() => Number)
+    discount: number;
 }
