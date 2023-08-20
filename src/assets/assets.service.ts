@@ -22,6 +22,7 @@ export class AssetsService {
     }
 
     async setPictures(uuid: string, pictures: Array<Express.Multer.File>) {
+        const filenames = [];
         const assetToUpdate = await this.assetRepository
             .createQueryBuilder()
             .update()
@@ -31,10 +32,10 @@ export class AssetsService {
             );
 
         for (const pic of pictures) {
-            this.uploadService.uploadAsset(`${uuid}~_~${pic.originalname}`, pic.buffer);
+            filenames.push(this.uploadService.uploadAsset(`${uuid}~_~${pic.originalname}`, pic.buffer));
 
             console.log(pic.originalname);
-            await assetToUpdate.set({ pictures: () => `array_append("pictures", '${pic.originalname}')` }).execute();
+            await assetToUpdate.set({ pictures: () => `array_append("pictures", '${filenames}')` }).execute();
         }
     }
 

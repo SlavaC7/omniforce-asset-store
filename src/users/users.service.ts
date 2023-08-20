@@ -17,16 +17,11 @@ export class UsersService {
     }
 
     async setAvatar(uuid: string, filename: string, avatar: Buffer) {
-        const cur_filename = (await this.getUser(uuid)).avatar;
-        console.log(cur_filename);
-        if (cur_filename)
-            await this.uploadService.deleteUser(cur_filename);
-
-        await this.uploadService.uploadUser(filename, avatar);
+        const file = await this.uploadService.uploadUser(filename, avatar);
 
         const res = await this.usersRepository.update(
             {uuid},
-            {avatar: filename}
+            {avatar: file}
         );
 
         if (res.affected === 0) throw new BadRequestException(`Can't find user with id "${uuid}"`);

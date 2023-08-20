@@ -1,6 +1,6 @@
-import {Injectable} from '@nestjs/common';
+import {ConsoleLogger, Injectable} from '@nestjs/common';
 import {ConfigService} from "@nestjs/config";
-import {DeleteObjectCommand, GetObjectCommand, PutObjectCommand, S3Client} from "@aws-sdk/client-s3";
+import {DeleteObjectCommand, PutObjectCommand, S3Client} from "@aws-sdk/client-s3";
 
 @Injectable()
 export class UploadService {
@@ -13,6 +13,7 @@ export class UploadService {
     })
 
     constructor(private readonly configService: ConfigService) {
+        console.log("Start AWS S3Client")
     }
 
     async uploadUser(filename: string, file: Buffer) {
@@ -23,14 +24,14 @@ export class UploadService {
                 Body: file,
             }),
         );
+        return `https://${this.configService.get<string>('AWS_USER_BUCKET')}.s3.${this.configService.get<string>('AWS_REGION')}.amazonaws.com/${filename}`;
     }
 
-
     async deleteUser(filename: string) {
-        return await this.s3Client.send(
-          new DeleteObjectCommand({
-              Bucket: this.configService.get<string>('AWS_USER_BUCKET'),
-              Key: filename,
+        await this.s3Client.send(
+            new DeleteObjectCommand({
+                Bucket: this.configService.get<string>('AWS_USER_BUCKET'),
+                Key: filename,
           })
         );
     }
@@ -41,8 +42,8 @@ export class UploadService {
                 Bucket: this.configService.get<string>('AWS_ASSET_BUCKET'),
                 Key: filename,
                 Body: file,
-
             }),
         );
+        return `https://${this.configService.get<string>('AWS_ASSET_BUCKET')}.s3.${this.configService.get<string>('AWS_REGION')}.amazonaws.com/${filename}`;
     }
 }
