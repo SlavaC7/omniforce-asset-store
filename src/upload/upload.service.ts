@@ -8,7 +8,7 @@ export class UploadService {
         region: this.configService.get<string>('AWS_REGION'),
         credentials: {
             accessKeyId: this.configService.get<string>('AWS_ACCESS_KEY'),
-            secretAccessKey: this.configService.get<string>('AWS_SECRET_ACCESS_KEY'),
+            secretAccessKey: this.configService.get<string>('S3_SECRET_ACCESS_KEY'),
         }
     })
 
