@@ -5,10 +5,10 @@ import {DeleteObjectCommand, PutObjectCommand, S3Client} from "@aws-sdk/client-s
 @Injectable()
 export class UploadService {
     private readonly s3Client = new S3Client({
-        region: this.configService.get<string>('S3_REGION'),
+        region: this.configService.get<string>('AWS_REGION'),
         credentials: {
             accessKeyId: this.configService.get<string>('AWS_ACCESS_KEY'),
-            secretAccessKey: this.configService.get<string>('S3_SECRET_ACCESS_KEY'),
+            secretAccessKey: this.configService.get<string>('AWS_SECRET_ACCESS_KEY'),
         }
     })
 
