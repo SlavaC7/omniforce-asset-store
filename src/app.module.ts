@@ -24,7 +24,7 @@ import {JwtModule} from "@nestjs/jwt";
                 DB_DATABASE_NAME: Joi.string().required(),
                 AWS_ACCESS_KEY: Joi.string().required(),
                 AWS_SECRET_ACCESS_KEY: Joi.string().required(),
-                AWS_REGION: Joi.string().required(),
+                AWS_HOST: Joi.string().required(),
                 AWS_USER_BUCKET: Joi.string().required(),
                 AWS_ASSET_BUCKET: Joi.string().required(),
             }),
