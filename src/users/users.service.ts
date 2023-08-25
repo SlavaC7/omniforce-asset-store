@@ -33,13 +33,17 @@ export class UsersService {
     }
 
     async updateUser(uuid: string, changes: UpdateUserDto) {
-        const userToUpdate = await this.getUser(uuid);
+        const userToUpdate = await this.getUserByUuid(uuid);
         console.log(Object.assign(userToUpdate, changes));
         return await this.usersRepository.save(Object.assign(userToUpdate, changes));
     }
 
-    async getUser(uuid: string) {
+    async getUserByUuid(uuid: string) {
         return await this.usersRepository.findOneByOrFail({uuid});
+    }
+
+    async getUserBySub(sub: string) {
+        return await this.usersRepository.findOneByOrFail({auth0_sub: sub});
     }
 
     async deleteUser(uuid: string) {
@@ -50,7 +54,7 @@ export class UsersService {
     }
 
     async blockUser(uuid: string) {
-        const sub = (await this.getUser(uuid)).auth0_sub;
+        const sub = (await this.getUserByUuid(uuid)).auth0_sub;
         return await this.managementClientService.managementClient.updateUser({id: sub}, {blocked: true});
     }
 }
