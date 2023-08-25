@@ -6,7 +6,7 @@ import {setupSwagger} from "./config/swagger.config";
 import * as cookieParser from "cookie-parser";
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule, { cors: true });
+    const app = await NestFactory.create(AppModule);
     const config = app.get<ConfigService>(ConfigService);
 
     app.enableCors({ credentials: true, origin: true });

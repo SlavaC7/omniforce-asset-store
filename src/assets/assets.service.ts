@@ -17,7 +17,7 @@ export class AssetsService {
     }
 
     async createAsset(newAsset: CreateAssetDto, userUUID: string) {
-        const user = await this.userService.getUser(userUUID);
+        const user = await this.userService.getUserByUuid(userUUID);
         return (await this.assetRepository.insert({...newAsset, user})).raw[0].uuid;
     }
 
