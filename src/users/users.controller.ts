@@ -15,7 +15,7 @@ import {
     UseInterceptors
 } from '@nestjs/common';
 import {UsersService} from './users.service';
-import {CreateUserDto} from '../dto/create-user.dto';
+import {CreateUserDto} from '../dto/user/create-user.dto';
 import {Request} from "express";
 import {JwtService} from "@nestjs/jwt";
 import {
@@ -30,11 +30,11 @@ import {
     ApiUnauthorizedResponse
 } from "@nestjs/swagger";
 import {FileInterceptor} from "@nestjs/platform-express";
-import {UserDto} from "../dto/user.dto";
+import {UserDto} from "../dto/user/user.dto";
 import {Roles} from "../role/roles.decorator";
 import {Role} from "../role/role.enum";
 import {RolesGuard} from "../role/roles.guard";
-import {UpdateUserDto} from "../dto/update-user.dto";
+import {UpdateUserDto} from "../dto/user/update-user.dto";
 import {JwtUserGuard} from "../authorization/auth.guard";
 import {NotFoundInterceptor} from "../interceptor/not-found.interceptor";
 
@@ -48,7 +48,6 @@ import {NotFoundInterceptor} from "../interceptor/not-found.interceptor";
 @UseGuards(JwtUserGuard)
 export class UsersController {
     constructor(private readonly usersService: UsersService, private readonly jwtService: JwtService) {
-
     }
 
     @ApiOperation({summary: "Create a new user"})

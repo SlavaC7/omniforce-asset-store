@@ -1,31 +1,30 @@
 import {AbstractEntity} from "./abstarct.entity";
-import {Column, Entity, JoinColumn, ManyToOne, OneToOne} from "typeorm";
+import {Column, Entity, JoinColumn, ManyToOne, OneToMany} from "typeorm";
 import {UserEntity} from "./user.entity";
+import {UserTranslateEntity} from "./user-translate.entity";
+import {AssetTranslateEntity} from "./asset-translate.entity";
 
 @Entity({name: "asset"})
 export class AssetEntity extends AbstractEntity {
-    @Column()
-    title: string;
-
-    @Column()
-    desc: string;
-
     @Column('float8')
-    price: number;
+    public price: number;
 
-    @Column('float8', { default: 0 })
-    rating: number;
+    @Column('float8', {default: 0})
+    public rating: number;
 
-    @Column({ default: 0 })
-    likes: number;
+    @Column({default: 0})
+    public likes: number;
 
-    @Column({ default: 0 })
-    discount: number;
+    @Column({default: 0})
+    public discount: number;
 
-    @Column('simple-array', {nullable: true, array: true, default: []})
-    pictures: Array<string>;
+    @Column('simple-array', {nullable: true, default: []})
+    public pictures: Array<string>;
 
     @ManyToOne(() => UserEntity)
     @JoinColumn()
     public user: UserEntity;
+
+    @OneToMany(() => AssetTranslateEntity, (assetTranslate) => assetTranslate.asset, { cascade: true })
+    public translations: AssetTranslateEntity[];
 }

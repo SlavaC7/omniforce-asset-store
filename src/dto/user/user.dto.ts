@@ -1,6 +1,6 @@
 import {ApiProperty} from "@nestjs/swagger";
 import {IsNumber, IsString} from "class-validator";
-import {AbstractDto} from "./abstract.dto";
+import {AbstractDto} from "../abstract.dto";
 
 export class UserDto extends AbstractDto {
     @ApiProperty({
@@ -20,24 +20,4 @@ export class UserDto extends AbstractDto {
     })
     @IsNumber()
     public avatar: string
-
-    @ApiProperty({
-        description: "The nickname of a user",
-        title: "User nickname",
-        type: String,
-        required: true,
-        example: "Xepobopa"
-    })
-    @IsString()
-    nickname: string;
-
-    @ApiProperty({
-        description: "The description of a user",
-        title: "User description",
-        type: String,
-        required: true,
-        example: "hryak + vulkan41k = love"
-    })
-    @IsString()
-    desc: string;
 }

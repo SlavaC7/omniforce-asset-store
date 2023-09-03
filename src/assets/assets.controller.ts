@@ -13,7 +13,7 @@ import {
     UseInterceptors
 } from '@nestjs/common';
 import {AssetsService} from './assets.service';
-import {CreateAssetDto} from "../dto/create-asset.dto";
+import {CreateAssetDto} from "../dto/asset/create-asset.dto";
 import {FilesInterceptor} from "@nestjs/platform-express";
 import {JwtUserGuard} from "../authorization/auth.guard";
 import {
@@ -27,8 +27,8 @@ import {
     ApiTags,
     ApiUnauthorizedResponse
 } from "@nestjs/swagger";
-import {AssetDto} from "../dto/asset.dto";
-import {AssetQueryDto} from "../dto/asset-query.dto";
+import {AssetDto} from "../dto/asset/asset.dto";
+import {AssetQueryDto} from "../dto/asset/asset-query.dto";
 
 @ApiTags('Asset')
 @ApiBearerAuth("access-token")
@@ -99,7 +99,9 @@ export class AssetsController {
     @ApiBadRequestResponse({description: "Can't find asset with provided 'uuid'"})
     @Get(':uuid')
     async getAsset(@Param('uuid') uuid: string) {
-        return await this.assetsService.getAsset(uuid);
+        const asset = await this.assetsService.getAsset(uuid);
+        console.log(asset)
+        return asset;
     }
 
     @ApiOperation({summary: "Delete an asset with provided 'uuid'"})

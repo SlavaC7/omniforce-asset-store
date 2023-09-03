@@ -24,7 +24,6 @@ export class UploadService {
                 Key: filename,
             }
         )
-        res.send((err, data) => console.log(`Error: ${err}\n\nData: ${{...data}}`));
         return `http://${this.configService.get<string>('AWS_HOST')}/${this.configService.get<string>('AWS_USER_BUCKET')}/${filename}`;
     }
 

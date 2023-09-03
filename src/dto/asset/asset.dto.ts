@@ -1,30 +1,9 @@
 import {IsArray, IsNumber, IsOptional, IsString, Max, Min} from "class-validator";
 import {ApiProperty} from "@nestjs/swagger";
-import {AbstractDto} from "./abstract.dto";
+import {AbstractDto} from "../abstract.dto";
 import {Transform, Type} from "class-transformer";
 
 export class AssetDto extends AbstractDto {
-    @ApiProperty({
-        description: "The title of an asset",
-        title: "Title",
-        type: String,
-        required: true,
-        example: "Mesh Baker"
-    })
-    @IsString()
-    title: string;
-
-    @ApiProperty({
-        description: "The description of an asset",
-        title: "Description",
-        type: String,
-        required: true,
-        example: "Improve performance! Combine meshes and materials to reduce batches!\n" +
-            "Mesh Baker is a powerful toolkit of flexible non-destructive workflows for optimizing props and scenes."
-    })
-    @IsString()
-    desc: string;
-
     @ApiProperty({
         description: "The price of an asset (dollars) (0 - if free)",
         title: "Price",
@@ -43,8 +22,19 @@ export class AssetDto extends AbstractDto {
         required: true,
         example: 428
     })
+    @Transform(({ value }) => Number(value))
     @IsNumber()
     userId: number;
+
+    @ApiProperty({
+        description: "The Id of a user, that created an asset",
+        title: "Developer ID",
+        type: Number,
+        required: true,
+        example: 428
+    })
+    @IsNumber()
+    translateId: number;
 
     @ApiProperty({
         description: "The rating of an asset (from 0 to 5.0)",
