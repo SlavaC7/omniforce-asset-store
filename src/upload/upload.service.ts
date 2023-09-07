@@ -17,24 +17,22 @@ export class UploadService {
     }
 
     async uploadUser(filename: string, file: Buffer) {
-        const res = await this.s3Client.upload(
+        return (await this.s3Client.upload(
             {
-                Bucket: "omniforce-asset-store-user",
+                Bucket: this.configService.get<string>('AWS_USER_BUCKET'),
                 Body: file,
                 Key: filename,
             }
-        )
-        return `http://${this.configService.get<string>('AWS_HOST')}/${this.configService.get<string>('AWS_USER_BUCKET')}/${filename}`;
+        ).promise()).Location
     }
 
     async uploadAsset(filename: string, file: Buffer) {
-        await this.s3Client.upload(
+        return (await this.s3Client.upload(
             {
-                Bucket: "omniforce-asset-store-asset",
+                Bucket: this.configService.get<string>('AWS_ASSET_BUCKET'),
                 Body: file,
                 Key: filename,
             }
-        )
-        return `http://${this.configService.get<string>('AWS_HOST')}/${this.configService.get<string>('AWS_ASSET_BUCKET')}/${filename}`;
+        ).promise()).Location
     }
 }
