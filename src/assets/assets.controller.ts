@@ -75,7 +75,7 @@ export class AssetsController {
         @UploadedFiles(
             new ParseFilePipeBuilder()
                 .addFileTypeValidator({
-                    fileType: "image/jpeg"
+                    fileType: "/(jpg|jpeg|png|gif)$/"
                 })
                 .addMaxSizeValidator({
                     maxSize: 2 * 1000 * 1000
