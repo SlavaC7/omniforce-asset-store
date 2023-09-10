@@ -30,8 +30,7 @@ export class UsersService {
 
 
     async create(newUser: CreateUserDto, auth0_sub: string) {
-        console.log(newUser);
-        return (await this.usersRepository.save({...newUser, auth0_sub})).uuid;
+        return await this.usersRepository.save({...newUser, auth0_sub});
     }
 
     async updateUser(uuid: string, changes: UpdateUserDto) {

@@ -97,9 +97,9 @@ export class UsersController {
         ) avatar: Express.Multer.File) {
         const token = req.headers.authorization.replace('Bearer ', '');
         const sub = this.jwtService.decode(token).sub;
-        const uuid = await this.usersService.create(newUser, sub);
-        await this.usersService.setAvatar(uuid, avatar.originalname, avatar.buffer);
-        return uuid;
+        const user = await this.usersService.create(newUser, sub);
+        await this.usersService.setAvatar(user.uuid, avatar.originalname, avatar.buffer);
+        return user;
     }
 
     @ApiOperation({summary: "Update a user with provided 'uuid'"})

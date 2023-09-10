@@ -33,7 +33,7 @@ export class AssetsService {
         asset.translations = userTrans;
         asset.price = newAsset.price;
         console.log(asset);
-        return (await this.assetRepository.save(asset)).uuid;
+        return await this.assetRepository.save(asset);
     }
 
     async setPictures(uuid: string, pictures: Array<Express.Multer.File>) {

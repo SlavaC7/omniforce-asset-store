@@ -84,9 +84,9 @@ export class AssetsController {
                     errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
                 })
         ) pictures: Array<Express.Multer.File>) {
-        const assetUuid = await this.assetsService.createAsset(newAsset, userUUID);
-        await this.assetsService.setPictures(assetUuid, pictures);
-        return assetUuid;
+        const asset = await this.assetsService.createAsset(newAsset, userUUID);
+        await this.assetsService.setPictures(asset.uuid, pictures);
+        return asset;
     }
 
     @Get('get')
