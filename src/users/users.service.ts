@@ -6,13 +6,11 @@ import {Repository} from "typeorm";
 import {ManagementClientService} from "../managementClient/management-client.service";
 import {UploadService} from "../upload/upload.service";
 import {UpdateUserDto} from "../dto/user/update-user.dto";
-import {UserTranslateEntity} from "../entity/user-translate.entity";
 
 @Injectable()
 export class UsersService {
     constructor(
         @InjectRepository(UserEntity) private usersRepository: Repository<UserEntity>,
-        @InjectRepository(UserTranslateEntity) private userTranslateRepository: Repository<UserTranslateEntity>,
         private readonly managementClientService: ManagementClientService,
         private readonly uploadService: UploadService
     ) {
@@ -30,34 +28,23 @@ export class UsersService {
         return res.affected;
     }
 
+
     async create(newUser: CreateUserDto, auth0_sub: string) {
-        const userTrans: UserTranslateEntity[] =
-            newUser.lang.map(value => {
-                const newUserTrans = new UserTranslateEntity();
-                newUserTrans.language = value.language;
-                newUserTrans.nickname = value.nickname;
-                newUserTrans.desc = value.desc;
-                return newUserTrans;
-            });
-        const user = new UserEntity();
-        user.auth0_sub = auth0_sub;
-        user.translations = userTrans;
-        return (await this.usersRepository.save(user)).uuid;
+        console.log(newUser);
+        return (await this.usersRepository.save({...newUser, auth0_sub})).uuid;
     }
 
     async updateUser(uuid: string, changes: UpdateUserDto) {
         const userToUpdate = await this.getUserByUuid(uuid);
-        console.log(userToUpdate)
-        console.log(Object.assign(userToUpdate, changes));
         return await this.usersRepository.save(Object.assign(userToUpdate, changes));
     }
 
     async getUserByUuid(uuid: string) {
-        return await this.usersRepository.findOneOrFail({ where: { uuid }, relations: ['translations'] });
+        return await this.usersRepository.findOneOrFail({ where: { uuid } });
     }
 
     async getUserBySub(sub: string) {
-        return await this.usersRepository.findOneOrFail({ where: { auth0_sub: sub }, relations: ['translations'] });
+        return await this.usersRepository.findOneOrFail({ where: { auth0_sub: sub } });
     }
 
     async deleteUser(uuid: string) {

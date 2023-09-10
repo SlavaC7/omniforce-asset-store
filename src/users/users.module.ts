@@ -7,13 +7,12 @@ import {TypeOrmModule} from "@nestjs/typeorm";
 import {UserEntity} from "../entity/user.entity";
 import {ManagementClientModule} from "../managementClient/management-client.module";
 import {UploadModule} from "../upload/upload.module";
-import {UserTranslateEntity} from "../entity/user-translate.entity";
 
 @Global()
 @Module({
     imports: [
         JwtModule.register({}),
-        TypeOrmModule.forFeature([UserEntity, UserTranslateEntity]),
+        TypeOrmModule.forFeature([UserEntity]),
         AuthorizationModule,
         ManagementClientModule,
         UploadModule

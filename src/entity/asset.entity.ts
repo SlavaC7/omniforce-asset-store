@@ -1,7 +1,6 @@
 import {AbstractEntity} from "./abstarct.entity";
 import {Column, Entity, JoinColumn, ManyToOne, OneToMany} from "typeorm";
 import {UserEntity} from "./user.entity";
-import {UserTranslateEntity} from "./user-translate.entity";
 import {AssetTranslateEntity} from "./asset-translate.entity";
 
 @Entity({name: "asset"})

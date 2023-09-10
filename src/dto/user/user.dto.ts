@@ -20,4 +20,24 @@ export class UserDto extends AbstractDto {
     })
     @IsNumber()
     public avatar: string
+
+    @ApiProperty({
+        description: "The user nickname",
+        title: "Nickname",
+        type: String,
+        required: true,
+        example: "Xepobopa"
+    })
+    @IsString()
+    nickname: string;
+
+    @ApiProperty({
+        description: "The user description",
+        title: "Description",
+        type: String,
+        required: true,
+        example: "Description"
+    })
+    @IsString()
+    desc: string;
 }

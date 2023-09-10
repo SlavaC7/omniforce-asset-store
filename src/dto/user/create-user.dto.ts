@@ -1,8 +1,4 @@
-import {UserTranslateDto} from "./user-translate.dto";
+import {PickType} from "@nestjs/swagger";
+import {UserDto} from "./user.dto";
 
-class Translate {
-    lang: UserTranslateDto[];
-}
-
-export class CreateUserDto extends Translate {
-}
+export class CreateUserDto extends PickType(UserDto, ['desc', 'nickname'] as const) {}
