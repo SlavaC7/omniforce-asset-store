@@ -7,6 +7,7 @@ import {typeOrmAsyncConfig} from "./config/typeorm.config";
 import {AssetsModule} from './assets/assets.module';
 import {HttpModule} from "@nestjs/axios";
 import {JwtModule} from "@nestjs/jwt";
+import { NewsModule } from './news/news.module';
 
 @Global()
 @Module({
@@ -34,7 +35,8 @@ import {JwtModule} from "@nestjs/jwt";
         UsersModule,
         AssetsModule,
         HttpModule,
-        JwtModule
+        JwtModule,
+        NewsModule
     ],
     exports: [HttpModule, JwtModule]
 })
