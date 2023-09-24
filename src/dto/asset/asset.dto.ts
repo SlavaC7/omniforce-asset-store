@@ -1,4 +1,4 @@
-import {IsArray, IsNumber, IsOptional, IsString, Max, Min} from "class-validator";
+import {IsArray, IsNumber, IsOptional, IsString, IsUrl, Max, Min} from "class-validator";
 import {ApiProperty} from "@nestjs/swagger";
 import {AbstractDto} from "../abstract.dto";
 import {Transform, Type} from "class-transformer";
@@ -74,6 +74,19 @@ export class AssetDto extends AbstractDto {
     @IsOptional()
     @IsArray()
     pictures: string[]
+
+    @ApiProperty({
+        description: "Url of the *.rar file with asset data",
+        title: "Url of the *.rar file",
+        type: String,
+        example: [
+            'https://asset-store-asset-images.s3.eu-north-1.amazonaws.com/xepobopa-test1.jpg',
+        ],
+        required: false,
+    })
+    @IsOptional()
+    @IsUrl()
+    file: string
 
     @ApiProperty({
         description: 'asset discount (0 - 100)',

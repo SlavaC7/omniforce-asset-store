@@ -42,7 +42,7 @@ export class AssetsService {
             urls.push(await this.uploadService.uploadAsset(`${uuid}+${pic.originalname}`, pic.buffer))
         }
 
-        const assetToUpdate = await this.assetRepository
+        await this.assetRepository
             .createQueryBuilder()
             .update()
             .set({
@@ -55,13 +55,28 @@ export class AssetsService {
             .execute();
     }
 
+    async setFile(uuid: string, file: Express.Multer.File) {
+        const url = await this.uploadService.uploadAsset(`file:${uuid}_${file.originalname}`, file.buffer);
+        await this.assetRepository
+            .createQueryBuilder()
+            .update()
+            .set({
+                file: url
+            })
+            .where(
+                "uuid = :uuid",
+                {uuid}
+            )
+            .execute();
+    }
+
     async getAsset(uuid: string) {
-        return await this.assetRepository.findOneOrFail({where: {uuid}, relations: ['user', 'translations', 'user.translations']});
+        return await this.assetRepository.findOneOrFail({where: {uuid}, relations: ['user', 'translations']});
     }
 
     async getAssetByQuery(query: AssetQueryDto) {
         console.log(query)
-        const queryBuilder = await this.assetRepository.createQueryBuilder('asset');
+        const queryBuilder = this.assetRepository.createQueryBuilder('asset');
         queryBuilder.leftJoinAndSelect('asset.translations', 'translations');
         queryBuilder.leftJoinAndSelect('asset.user', 'user');
         queryBuilder.leftJoinAndSelect('user.translations', 'translationsUser');

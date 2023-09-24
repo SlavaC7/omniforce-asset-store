@@ -7,14 +7,14 @@ import {
     Param,
     ParseFilePipeBuilder,
     Post,
-    Query,
+    Query, UploadedFile,
     UploadedFiles,
     UseGuards,
     UseInterceptors
 } from '@nestjs/common';
 import {AssetsService} from './assets.service';
 import {CreateAssetDto} from "../dto/asset/create-asset.dto";
-import {FilesInterceptor} from "@nestjs/platform-express";
+import {FileFieldsInterceptor, FileInterceptor, FilesInterceptor} from "@nestjs/platform-express";
 import {JwtUserGuard} from "../authorization/auth.guard";
 import {
     ApiBadRequestResponse,
@@ -47,7 +47,10 @@ export class AssetsController {
         type: Number
     })
     @ApiConsumes('multipart/form-data')
-    @UseInterceptors(FilesInterceptor('pictures'))
+    @UseInterceptors(FileFieldsInterceptor([
+        { name: 'pictures', maxCount: 1 },
+        { name: 'file' },
+    ]))
     @ApiBody({
         schema: {
             type: "object",
@@ -72,21 +75,12 @@ export class AssetsController {
     async createAsset(
         @Param('userUUID') userUUID: string,
         @Body() newAsset: CreateAssetDto,
-        @UploadedFiles(
-            new ParseFilePipeBuilder()
-                .addFileTypeValidator({
-                    fileType: "/(jpg|jpeg|png|gif)$/"
-                })
-                .addMaxSizeValidator({
-                    maxSize: 2 * 1000 * 1000
-                })
-                .build({
-                    errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
-                })
-        ) pictures: Array<Express.Multer.File>) {
+        @UploadedFiles() files: { pictures: Express.Multer.File[], file: Express.Multer.File }
+    ) {
         const asset = await this.assetsService.createAsset(newAsset, userUUID);
-        await this.assetsService.setPictures(asset.uuid, pictures);
-        return asset;
+        await this.assetsService.setFile(asset.uuid, files.file[0]);
+        await this.assetsService.setPictures(asset.uuid, files.pictures);
+        return await this.getAsset(asset.uuid);
     }
 
     @Get('get')

@@ -57,6 +57,10 @@ export class UsersService {
         const sub = (await this.getUserByUuid(uuid)).auth0_sub;
         return await this.managementClientService.managementClient.updateUser({id: sub}, {blocked: true});
     }
+
+    async getUserRoles(sub: string) {
+        return await this.managementClientService.managementClient.getUserRoles({ id: sub });
+    }
 }
 
 

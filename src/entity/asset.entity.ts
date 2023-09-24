@@ -20,6 +20,9 @@ export class AssetEntity extends AbstractEntity {
     @Column('simple-array', {nullable: true, default: []})
     public pictures: Array<string>;
 
+    @Column({ nullable: true })
+    public file: string;
+
     @ManyToOne(() => UserEntity)
     @JoinColumn()
     public user: UserEntity;

@@ -37,6 +37,7 @@ import {RolesGuard} from "../role/roles.guard";
 import {UpdateUserDto} from "../dto/user/update-user.dto";
 import {JwtUserGuard} from "../authorization/auth.guard";
 import {NotFoundInterceptor} from "../interceptor/not-found.interceptor";
+import {RoleResponseDto} from "../dto/response/role.dto";
 
 @ApiTags('User')
 @ApiBearerAuth("access-token")
@@ -181,5 +182,17 @@ export class UsersController {
     @UseGuards(RolesGuard)
     async blockUser(@Param('uuid') uuid: string) {
         return await this.usersService.blockUser(uuid);
+    }
+
+    @ApiOperation({summary: "Returns an array of user roles. Roles are got by token"})
+    @ApiOkResponse({description: "Returns an array of user roles", type: [RoleResponseDto]})
+    @ApiBadRequestResponse({description: "Can't find user with provided 'uuid'"})
+    @Get('roles')
+    async getUserRoles(@Req() req: Request) {
+        const token = req.headers.authorization.replace('Bearer ', '');
+        const sub = this.jwtService.decode(token).sub;
+        const roles = await this.usersService.getUserRoles(sub);
+        console.log(roles);
+        return roles;
     }
 }
