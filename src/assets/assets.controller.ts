@@ -54,7 +54,7 @@ export class AssetsController {
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
     FileFieldsInterceptor([
-      { name: 'pictures', maxCount: 1 },
+      { name: 'pictures', maxCount: 10 },
       { name: 'file' },
     ]),
   )
