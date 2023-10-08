@@ -96,6 +96,7 @@ export class UsersController {
                     errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
                 })
         ) avatar: Express.Multer.File) {
+        console.log(newUser)
         const token = req.headers.authorization.replace('Bearer ', '');
         const sub = this.jwtService.decode(token).sub;
         const user = await this.usersService.create(newUser, sub);

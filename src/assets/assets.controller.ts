@@ -29,6 +29,7 @@ import {
 } from "@nestjs/swagger";
 import {AssetDto} from "../dto/asset/asset.dto";
 import {AssetQueryDto} from "../dto/asset/asset-query.dto";
+import {AssetResponseDto} from "../dto/response/asset.dto";
 
 @ApiTags('Asset')
 @ApiBearerAuth("access-token")
@@ -43,8 +44,8 @@ export class AssetsController {
 
     @ApiOperation({summary: "Create a new asset"})
     @ApiCreatedResponse({
-        description: "Asset has been created. Returned value is an uuid of an created object",
-        type: Number
+        description: "Asset has been created. Return new asset",
+        type: AssetResponseDto
     })
     @ApiConsumes('multipart/form-data')
     @UseInterceptors(FileFieldsInterceptor([
@@ -77,9 +78,13 @@ export class AssetsController {
         @Body() newAsset: CreateAssetDto,
         @UploadedFiles() files: { pictures: Express.Multer.File[], file: Express.Multer.File }
     ) {
+        console.log("Create Asset")
         const asset = await this.assetsService.createAsset(newAsset, userUUID);
+        console.log("Set File")
         await this.assetsService.setFile(asset.uuid, files.file[0]);
+        console.log("Set Picture")
         await this.assetsService.setPictures(asset.uuid, files.pictures);
+        console.log("Get Asset")
         return await this.getAsset(asset.uuid);
     }
 
